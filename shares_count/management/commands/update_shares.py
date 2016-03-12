@@ -11,7 +11,6 @@ logger = settings.APP_LOGGER
 
 class Command(LabelCommand):
     def handle(self, label, **options):
-        model, ct = get_contenttype_model()
         labels_dates = {
             'geront': {'created__lte': datetime.now() - timedelta(days=360)},
             'mature': {
@@ -24,4 +23,13 @@ class Command(LabelCommand):
             },
             'new': {'created__gte': datetime.now() - timedelta(days=7)},
         }
-        update_shares(model, ct, age_kwargs=labels_dates[label])
+
+        try:
+            sharer_models = getattr(settings, 'SHARER_MODELS')
+        except ValueError:
+            raise ImproperlyConfigured("SHARER_MODELS must be of the form ['app_label.model_name']")
+
+        for sharer_model in sharer_models:
+            app_label, model_name = sharer_model.split('.')
+            model, ct = get_contenttype_model(app_label, model_name)
+            update_shares(model, ct, age_kwargs=labels_dates[label])

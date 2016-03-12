@@ -22,21 +22,17 @@ class Share(TimeStampedModel):
 
     def update_shares(self):
         orig_shares = self.shares
-        self.shares = socialshares.fetch(self.content_object.get_full_url(), ['facebook'], attempts=3).get('facebook', 0)
+        self.shares = socialshares.fetch(self.content_object.get_full_url(), ['facebook'], attempts=3).get('facebook',
+                                                                                                           0)
         if self.shares != orig_shares:
             self.save()
 
 
-def get_contenttype_model():
-    try:
-        app_label, model_name = settings.SHARER_MODEL.split('.')
-    except ValueError:
-        raise ImproperlyConfigured("SHARER_MODEL must be of the form 'app_label.model_name'")
-
+def get_contenttype_model(app_label, model_name):
     model = apps.get_model(app_label=app_label, model_name=model_name)
     if model is None:
         raise ImproperlyConfigured(
-            "SHARER_MODEL refers to model '%s' that has not been installed" % settings.SHARER_MODEL)
+            "%s refers to model '%s' that has not been installed" % app_model_name, app_model_name)
     return model, ContentType.objects.get_for_model(model)
 
 
