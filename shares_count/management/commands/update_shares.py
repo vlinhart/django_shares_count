@@ -2,6 +2,7 @@
 from datetime import timedelta, datetime
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import LabelCommand
 
 from shares_count.models import get_contenttype_model, update_shares

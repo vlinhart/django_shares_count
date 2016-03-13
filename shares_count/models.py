@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 
-import socialshares
 import time
+
+import socialshares
 from django.apps import apps
-from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
